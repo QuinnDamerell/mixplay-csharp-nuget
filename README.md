@@ -3,16 +3,16 @@ A C# Nuget Package For MixPlay! This soon-to-be nuget package wraps the official
 
 **In progress - the sdk not complete yet.**
 
-# Sample Implementation 
+## Sample Implementation 
 See the mixplay-csharp-sample for an example usage.
 
-# To Install 
+## To Install 
 - In Visual Studio, right click your project and click `Manage Nuget Packages...`
 - Click the `browse` tab in the top left
 - Search for `MixPlay.Unofficial`
 - Click install
 
-# To Build From Source
+## To Build From Source
 - Clone this repo
 - Run `git submodule init` and `git submodule update`
 - Open the solution in Visual Studio
