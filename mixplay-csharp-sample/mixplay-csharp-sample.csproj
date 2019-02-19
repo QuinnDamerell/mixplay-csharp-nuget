@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MixPlay" Version="1.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\mixplay-csharp-nuget\mixplay-csharp-nuget.csproj" />
   </ItemGroup>
 
 </Project>

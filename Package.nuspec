@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MixPlay.Unofficial</id>
+    <version>0.1.0-beta</version>
+    <authors>Quinn Damerell</authors>
+    <owners>Quinn Damerell</owners>
+    <licenseUrl>https://github.com/QuinnDamerell/mixplay-csharp-nuget/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/QuinnDamerell/mixplay-csharp-nuget</projectUrl>
+    <iconUrl>https://www.gamasutra.com/db_area/images/news/2018/May/318842/mixplay342.jpg</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An unofficial SDK for Mixer.com's MixPlay viewer interaction. Find more info about MixPlay here: https://dev.mixer.com/guides/mixplay/introduction</description>
+    <releaseNotes>Firest Release!</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>mixer mixplay dotnetcore interactive</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework2.0" >
+        <dependency id="Newtonsoft.Json" version="12.0.1" />
+      </group>
+      <group targetFramework=".NETFramework4.0">
+         <dependency id="Newtonsoft.Json" version="12.0.1" />
+      </group>
+      <group targetFramework=".NETFramework4.5">
+         <dependency id="Newtonsoft.Json" version="12.0.1" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+         <dependency id="Newtonsoft.Json" version="12.0.1" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="MixPlay.targets" target="build\MixPlay.targets" />
+    <file src="x64\Release\MixPlayCpp.dll" target="x64\MixPlayCpp.dll" />
+    <file src="x64\Release\MixPlayCpp.dll" target="x64\MixPlayCpp.pdb" />
+    <file src="Release\MixPlayCpp.dll" target="x86\MixPlayCpp.dll" />
+    <file src="Release\MixPlayCpp.dll" target="x86\MixPlayCpp.pdb" />
+    <file src="mixplay-csharp-nuget\bin\Release\netcoreapp2.1\*" target="lib\netstandard2.0\" />
+    <file src="mixplay-csharp-nuget\bin\Release\netcoreapp2.1\*" target="lib\net45\" />
+    <file src="mixplay-csharp-nuget\bin\Release\netcoreapp2.1\*" target="lib\net20\" />
+    <file src="mixplay-csharp-nuget\bin\Release\netcoreapp2.1\*" target="lib\net40\" />
+  </files>
+</package>

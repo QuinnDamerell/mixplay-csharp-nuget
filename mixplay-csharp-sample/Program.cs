@@ -63,15 +63,15 @@ namespace mixplay_csharp_playground
             {
                 return File.ReadAllText("Auth.txt");
             }
-            catch(Exception e)
-            {
-
-            }
+            catch(Exception)
+            { }
             return null;
         }
 
         public static void WriteAuth(string auth)
         {
+            // Note! This should be protected, anyone who reads this file can login to this 
+            // interactive experience.
             File.WriteAllText("Auth.txt", auth);
         }
     }
