@@ -1,0 +1,3 @@
+[submodule "interactive-cpp"]
+	path = interactive-cpp
+	url = https://github.com/mixer/interactive-cpp.git
