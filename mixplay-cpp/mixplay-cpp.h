@@ -31,5 +31,20 @@ extern "C" {
     {
         return interactive_auth_refresh_token(clientId, clientSecret, staleToken, refreshToken, refreshTokenLength);
     }
+
+    __declspec(dllexport) int __cdecl mixplay_open_session(void* session)
+    {
+        return interactive_open_session((interactive_session*)session);
+    }    
+
+    __declspec(dllexport) int __cdecl mixplay_connect(ULONG64 session, const char* auth, const char* versionId, const char* shareCode, bool setReady)
+    {
+        return interactive_connect((interactive_session)session, auth, versionId, shareCode, setReady);
+    }
+
+    __declspec(dllexport) int __cdecl mixplay_run(ULONG64 session, unsigned int maxEventsToProcess)
+    {
+        return interactive_run((interactive_session)session, maxEventsToProcess);
+    }
 }
 

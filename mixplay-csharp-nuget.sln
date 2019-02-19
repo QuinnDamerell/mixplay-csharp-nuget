@@ -8,6 +8,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mixplay-cpp", "mixplay-cpp\mixplay-cpp.vcxproj", "{7405FF62-84B8-43C3-98E3-4C848BFF66CF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mixplay-csharp-sample", "mixplay-csharp-sample\mixplay-csharp-sample.csproj", "{86844593-FF98-458E-B02C-1156AF2E97E9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{78AE7429-1C06-4653-9E27-0CB4A1C35E59} = {78AE7429-1C06-4653-9E27-0CB4A1C35E59}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

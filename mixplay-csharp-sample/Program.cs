@@ -2,16 +2,21 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using Microsoft.Mixer;
 
 namespace mixplay_csharp_playground
 {
     class Program
     {
+        static string ClientId      = "f0d20e2d263b75894f5cdaabc8a344b99b1ea6f9ecb7fa4f";
+        static string ShareCode     = "xe7dpqd5";
+        static string InteractiveId = "135704";
+
         static void Main(string[] args)
         {
             // Start by creating a mix play object with the client creds.
-            MixPlay mixplay = new MixPlay("f0d20e2d263b75894f5cdaabc8a344b99b1ea6f9ecb7fa4f", null);
+            MixPlay mixplay = new MixPlay(ClientId, null);
 
             //
             // Handle Auth.
@@ -31,7 +36,7 @@ namespace mixplay_csharp_playground
                     mixplay.WaitForShortCodeAuthComplete();
 
                     // Now that auth is complete, cache the auth token so the user doesn't have to sign in again.
-                    WriteAuth(mixplay.GetAuthTokenString());
+                    //WriteAuth(mixplay.GetAuthTokenString());
                 }
                 else
                 {
@@ -54,6 +59,26 @@ namespace mixplay_csharp_playground
 
             //
             // Do other stuff.
+            try
+            {
+                mixplay.OpenSession();
+
+                mixplay.Connect(InteractiveId, ShareCode, true);
+            }
+            catch (MixPlayException e)
+            {
+                if (e.HasMixerResultCode)
+                {
+                    Console.WriteLine("Auth failed due to MixPlay code " + e.MixerErrorCode);
+                }
+                else
+                {
+                    Console.WriteLine("Auth failed due to http error " + e.HttpErrorCode);
+                }
+                return;
+            }
+
+            Thread.Sleep(50000);
 
         }
 

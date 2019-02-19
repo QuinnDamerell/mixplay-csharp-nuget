@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
 namespace Microsoft.Mixer
 {
@@ -81,7 +82,7 @@ namespace Microsoft.Mixer
         private static bool IsMixerResultCode(int code)
         {
             // If the code is > results, it's usually an http error code.
-            if (code > Enum.GetNames(typeof(MixerResultCode)).Length)
+            if (code < Enum.GetNames(typeof(MixerResultCode)).Length -2)
             {
                 return true;
             }
@@ -127,20 +128,29 @@ namespace Microsoft.Mixer
 
         #region DllInports
 
-        [DllImport("MixPlay.dll")]
+        [DllImport("MixPlayCpp.dll")]
         static extern int mixplay_auth_get_short_code(string clientId, string clientSecret, StringBuilder shortCode, ref UInt64 shortCodeLength, StringBuilder shortCodeHandle, ref UInt64 shortCodeHandleLength);
 
-        [DllImport("MixPlay.dll")]
+        [DllImport("MixPlayCpp.dll")]
         static extern int mixplay_auth_wait_short_code(string clientId, string clientSecret, string shortCodeHandle, StringBuilder refreshToken, ref UInt64 refreshTokenLen);
 
-        [DllImport("MixPlay.dll")]
+        [DllImport("MixPlayCpp.dll")]
         static extern int mixplay_auth_parse_refresh_token(string token, StringBuilder authorization, ref UInt64 authorizationLen);
 
-        [DllImport("MixPlay.dll")]
+        [DllImport("MixPlayCpp.dll")]
         static extern int mixplay_auth_is_token_stale(string token, ref bool isStale);
 
-        [DllImport("MixPlay.dll")]
+        [DllImport("MixPlayCpp.dll")]
         static extern int mixplay_auth_refresh_token(string clientId, string clientSecret, string staleToken, StringBuilder refreshToken, ref UInt64 refreshTokenLength);
+
+        [DllImport("MixPlayCpp.dll")]
+        static extern int mixplay_open_session(ref UInt64 session);
+
+        [DllImport("MixPlayCpp.dll")]
+        static extern int mixplay_connect(UInt64 session, string auth, string versionId, string shareCode, bool setReady);
+
+        [DllImport("MixPlayCpp.dll")]
+        static extern int mixplay_run(UInt64 session, uint maxEventsToProcess);
 
         #endregion
 
@@ -151,6 +161,10 @@ namespace Microsoft.Mixer
         // Auth
         string m_shortCodeHandle = null;
         MixPlayAuthContext m_authContext = null;
+
+        // Session
+        UInt64 m_session = 0;
+        Thread m_sessionWorker = null;
 
         public MixPlay(string clientId, string clientSecret)
         {
@@ -286,6 +300,86 @@ namespace Microsoft.Mixer
                 RefreshToken = refreshToken,
                 AuthToken = authToken.ToString()
             };
+        }
+
+        private void EnsureAuth()
+        {
+            if(m_authContext ==  null)
+            {
+                throw new MixPlayException("The SDK isn't authenticated!");
+            }
+        }
+
+        #endregion
+
+        #region Session
+
+        // Returns if there is a valid session running or not. 
+        public bool HasValidSession()
+        {
+            return m_session != 0 && m_sessionWorker != null;
+        }
+
+        // Called to open a session with MixPlay.
+        public void OpenSession()
+        {
+            // Make sure we have auth
+            EnsureAuth();
+
+            if(HasValidSession())
+            {
+                throw new MixPlayException("A session already exists!");
+            }
+
+            UInt64 session = 0;
+            int ret = mixplay_open_session(ref session);
+            if(ret != 0)
+            {
+                throw new MixPlayException(ret);
+            }
+
+            // Keep track of the session.
+            m_session = session;
+        }
+
+        public void Connect(string versionId, string shareCode, bool setReady)
+        {
+            // Make sure we have auth
+            EnsureAuth();
+
+            if (m_session == 0)
+            {
+                throw new MixPlayException("Session Not Open, call OpenSession() first!");
+            }
+
+            int ret = mixplay_connect(m_session, m_authContext.AuthToken, versionId, shareCode, setReady);
+            if(ret != 0)
+            {
+                throw new MixPlayException(ret);
+            }
+
+            // Start a thread to run the interactive loop.
+            m_sessionWorker = new Thread(SessionWorker);
+            m_sessionWorker.Start();
+        }
+
+        private void SessionWorker()
+        {
+            // TODO handle this exiting.
+            while(true)
+            {
+                int ret = mixplay_run(m_session, 2000);
+                if(ret != 0)
+                {
+                    Console.WriteLine("TODO handle this, Session worker loop error: "+ ret);
+                }
+                Thread.Sleep(20);
+            }
+        }
+
+        public void CloseSession()
+        {
+
         }
 
         #endregion
